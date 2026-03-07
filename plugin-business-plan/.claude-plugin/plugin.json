@@ -1,0 +1,9 @@
+{
+  "name": "modelisation-business-plan",
+  "description": "Prévisionnel financier pour entrepreneurs et TPE/PME. Compte de résultat, trésorerie, bilan prévisionnel, seuil de rentabilité.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Agentique",
+    "url": "https://agentique.fr"
+  }
+}

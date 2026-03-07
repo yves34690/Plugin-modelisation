@@ -1,0 +1,9 @@
+{
+  "name": "modelisation-collectivites",
+  "description": "Modélisation financière pour les collectivités territoriales françaises. Prospective financière, PPI, simulation fiscale. Données via datagouv.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Agentique",
+    "url": "https://agentique.fr"
+  }
+}
