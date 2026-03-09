@@ -123,7 +123,20 @@ curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?wher
 curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-particuliers/records?where=dep%3D%22{dep}%22%20and%20exercice%3D%222024%22&select=avg(taux_global_tfb)%20as%20tfb_moyen,avg(taux_global_th)%20as%20th_moyen,avg(taux_plein_teom)%20as%20teom_moyen&limit=1"
 ```
 
-**Étape 3b — Données budgétaires (~~donnees publiques)**
+**Étape 3b — Comptes de gestion (~~comptes)**
+
+```bash
+# Fiche financière complète — tous les agrégats OFGL
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/ofgl-base-communes-consolidee/records?where=com_code%3D%22{code_insee}%22%20and%20year(exer)%3D{annee}&limit=1"
+
+# Historique pluriannuel (5 ans)
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/ofgl-base-communes-consolidee/records?where=com_code%3D%22{code_insee}%22%20and%20year(exer)%3E%3D{annee-4}&select=exer,epargne_brute,epargne_nette,encours_de_dette,depenses_equipement,charges_de_personnel&order_by=exer%20asc&limit=10"
+
+# Comparaison strate
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/ofgl-base-communes-consolidee/records?where=tranche_population%3D%22{strate}%22%20and%20year(exer)%3D{annee}&select=avg(epargne_brute)%20as%20epargne_brute_moy,avg(encours_de_dette)%20as%20dette_moy,avg(capacite_desendettement)%20as%20desendettement_moy&limit=1"
+```
+
+**Étape 3c — Données budgétaires complémentaires (~~donnees publiques)**
 
 ```
 1. search_datasets → budgets collectivités (comptes individuels)
@@ -273,3 +286,5 @@ Selon le type de livrable, proposer les variables pertinentes avec pour chacune 
 - **restitution** — Production des livrables Power BI / Excel
 - **simulation-fiscale** — Simulation d'impact fiscal
 - **prospective** — Projection pluriannuelle
+- **comptes-collectivites** — Comptes de gestion OFGL (agrégats financiers, épargne, dette)
+- **aides-territoires** — Recherche d'aides et subventions publiques

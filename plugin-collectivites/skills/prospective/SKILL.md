@@ -23,10 +23,21 @@ Si ~~insee est connecte :
 
 ### 2. Collecter les donnees historiques
 
-**Données budgétaires et fiscales (~~donnees publiques)** :
-- Rechercher les budgets de la collectivite sur data.gouv.fr (`search_datasets` avec mots-cles : budget, collectivite, nom)
-- Recuperer les comptes administratifs des 3-5 derniers exercices
-- Recuperer les donnees fiscales (bases, taux, produits)
+**Comptes de gestion (~~comptes — OFGL)** :
+
+```bash
+# Agrégats financiers consolidés (épargne, dette, recettes, dépenses) — 5 dernières années
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/ofgl-base-communes-consolidee/records?where=com_code%3D%22{code_insee}%22%20and%20year(exer)%3E%3D{annee-4}&order_by=exer%20asc&limit=10"
+
+# Dotations détaillées (si GFP)
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/dotations-gfp/records?where=siren%3D%22{siren}%22%20and%20year(exer)%3E%3D{annee-4}&order_by=exer%20asc&limit=10"
+```
+
+**Données fiscales (~~fiscalite)** :
+- Recuperer les donnees fiscales (bases, taux, produits) via REI
+
+**Données budgétaires complémentaires (~~donnees publiques)** :
+- Rechercher les balances comptables detaillees sur data.gouv.fr si besoin de granularite par compte
 
 **Données démographiques (~~insee)** :
 - Population legale et evolution via Melodi

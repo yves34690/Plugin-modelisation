@@ -325,3 +325,5 @@ curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nam
 - **previsionnel** — Compte de résultat prévisionnel
 - **tresorerie** — Plan de trésorerie
 - **rentabilite** — Seuil de rentabilité et point mort
+- **bilan-previsionnel** — Bilan prévisionnel sur 3 ans
+- **plan-financement** — Plan de financement initial + pluriannuel

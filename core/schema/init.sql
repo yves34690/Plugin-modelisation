@@ -137,6 +137,31 @@ CREATE TABLE IF NOT EXISTS dette (
 -- TABLES SPECIFIQUES BUSINESS PLAN
 -- ============================================================
 
+-- Bilan previsionnel
+CREATE TABLE IF NOT EXISTS bilan_previsionnel (
+    id              SERIAL PRIMARY KEY,
+    projet_id       INTEGER NOT NULL REFERENCES projets(id) ON DELETE CASCADE,
+    scenario        VARCHAR(20) NOT NULL CHECK (scenario IN ('conservateur', 'realiste', 'optimiste')),
+    annee           INTEGER NOT NULL,
+    section         VARCHAR(10) NOT NULL CHECK (section IN ('actif', 'passif')),
+    poste           VARCHAR(100) NOT NULL,
+    categorie       VARCHAR(50) NOT NULL, -- 'immobilisations', 'actif_circulant', 'capitaux_propres', 'dettes'
+    montant         NUMERIC(15,2) NOT NULL,
+    UNIQUE(projet_id, scenario, annee, poste)
+);
+
+-- Plan de financement
+CREATE TABLE IF NOT EXISTS plan_financement (
+    id              SERIAL PRIMARY KEY,
+    projet_id       INTEGER NOT NULL REFERENCES projets(id) ON DELETE CASCADE,
+    scenario        VARCHAR(20) NOT NULL CHECK (scenario IN ('conservateur', 'realiste', 'optimiste')),
+    annee           INTEGER NOT NULL, -- 0 = initial
+    type_flux       VARCHAR(10) NOT NULL CHECK (type_flux IN ('ressource', 'emploi')),
+    poste           VARCHAR(100) NOT NULL,
+    montant         NUMERIC(15,2) NOT NULL,
+    UNIQUE(projet_id, scenario, annee, poste)
+);
+
 -- Plan de tresorerie mensuel
 CREATE TABLE IF NOT EXISTS tresorerie (
     id              SERIAL PRIMARY KEY,
@@ -159,6 +184,8 @@ CREATE INDEX IF NOT EXISTS idx_projections_projet_scenario ON projections(projet
 CREATE INDEX IF NOT EXISTS idx_resultats_projet_scenario ON resultats(projet_id, scenario);
 CREATE INDEX IF NOT EXISTS idx_benchmarks_secteur ON benchmarks(secteur);
 CREATE INDEX IF NOT EXISTS idx_tresorerie_projet_scenario ON tresorerie(projet_id, scenario);
+CREATE INDEX IF NOT EXISTS idx_bilan_projet_scenario ON bilan_previsionnel(projet_id, scenario);
+CREATE INDEX IF NOT EXISTS idx_plan_financement_projet_scenario ON plan_financement(projet_id, scenario);
 CREATE INDEX IF NOT EXISTS idx_fiscalite_projet ON fiscalite_locale(projet_id);
 
 -- ============================================================
@@ -199,6 +226,37 @@ FROM tresorerie t
 JOIN projets p ON p.id = t.projet_id
 GROUP BY p.nom, t.projet_id, t.scenario, t.annee, t.mois
 ORDER BY p.nom, t.scenario, t.annee, t.mois;
+
+-- Vue : verification equilibre bilan (actif = passif)
+CREATE OR REPLACE VIEW v_bilan_equilibre AS
+SELECT
+    p.nom AS projet,
+    bp.scenario,
+    bp.annee,
+    SUM(CASE WHEN bp.section = 'actif' THEN bp.montant ELSE 0 END) AS total_actif,
+    SUM(CASE WHEN bp.section = 'passif' THEN bp.montant ELSE 0 END) AS total_passif,
+    SUM(CASE WHEN bp.section = 'actif' THEN bp.montant ELSE 0 END) -
+    SUM(CASE WHEN bp.section = 'passif' THEN bp.montant ELSE 0 END) AS ecart
+FROM bilan_previsionnel bp
+JOIN projets p ON p.id = bp.projet_id
+GROUP BY p.nom, bp.projet_id, bp.scenario, bp.annee
+ORDER BY p.nom, bp.scenario, bp.annee;
+
+-- Vue : plan de financement cumule
+CREATE OR REPLACE VIEW v_plan_financement_cumule AS
+SELECT
+    p.nom AS projet,
+    pf.scenario,
+    pf.annee,
+    SUM(CASE WHEN pf.type_flux = 'ressource' THEN pf.montant ELSE 0 END) AS total_ressources,
+    SUM(CASE WHEN pf.type_flux = 'emploi' THEN pf.montant ELSE 0 END) AS total_emplois,
+    SUM(CASE WHEN pf.type_flux = 'ressource' THEN pf.montant ELSE -pf.montant END) AS variation_tresorerie,
+    SUM(SUM(CASE WHEN pf.type_flux = 'ressource' THEN pf.montant ELSE -pf.montant END))
+        OVER (PARTITION BY pf.projet_id, pf.scenario ORDER BY pf.annee) AS tresorerie_cumulee
+FROM plan_financement pf
+JOIN projets p ON p.id = pf.projet_id
+GROUP BY p.nom, pf.projet_id, pf.scenario, pf.annee
+ORDER BY p.nom, pf.scenario, pf.annee;
 
 -- Vue : ratios collectivites
 CREATE OR REPLACE VIEW v_ratios_collectivite AS

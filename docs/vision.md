@@ -45,12 +45,14 @@ Les publics cibles sont différents, les données sources sont différentes, les
 - Programmation économique (zones d'activité, équipements)
 - Analyse comparative inter-collectivités
 
-**Source de données principale** : [datagouv-mcp](https://github.com/datagouv/datagouv-mcp)
-- Budgets des collectivités (M57, M14)
-- Données fiscales (bases, taux, exonérations)
-- Démographie INSEE
-- Dotations de l'État (DGF, FCTVA, etc.)
-- Données socio-économiques
+**Sources de données** :
+- [datagouv-mcp](https://github.com/datagouv/datagouv-mcp) — Budgets des collectivités (M57, M14), données socio-économiques
+- OFGL (data.ofgl.fr) — Comptes de gestion consolidés (49 agrégats financiers), dotations détaillées
+- Fiscalité locale (DGFiP/OFGL REI) — Taux, bases, produits, exonérations
+- INSEE (Sirene, Melodi, Geo, Adresse) — Entreprises, démographie, géographie
+- Eurostat — Inflation, taux d'intérêt, comparaisons européennes
+- Data Commons (Google) — Données mondiales complémentaires
+- Aides-territoires — Subventions et aides publiques (DETR, DSIL, fonds verts, etc.)
 
 **Livrables types** :
 - Tableau de prospective financière (section de fonctionnement + investissement)
@@ -78,7 +80,8 @@ Les publics cibles sont différents, les données sources sont différentes, les
 **Livrables types** :
 - SIG prévisionnel (soldes intermédiaires de gestion)
 - Tableau de trésorerie mensuel
-- Bilan prévisionnel simplifié
+- Bilan prévisionnel sur 3 ans
+- Plan de financement initial + pluriannuel (3-5 ans)
 - Graphiques de rentabilité et cash-flow
 
 ## Moteur commun : les 3 scénarios

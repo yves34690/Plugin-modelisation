@@ -14,6 +14,8 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 | Statistiques europeennes | `~~eurostat` | Skill Eurostat (API Statistics) | — |
 | Donnees mondiales | `~~datacommons` | MCP Data Commons (Google) | — |
 | Base de donnees | `~~base de donnees` | — (PostgreSQL a configurer) | Supabase, SQLite |
+| Comptes de gestion | `~~comptes` | Skill comptes-collectivites (data.ofgl.fr) | — |
+| Aides et subventions | `~~aides` | Skill aides-territoires (aides-territoires.beta.gouv.fr) | — |
 | Restitution / BI | `~~restitution` | — (Power BI a configurer) | Excel, Metabase |
 | Suite bureautique | `~~bureautique` | Microsoft 365 | Google Workspace |
 
@@ -23,11 +25,13 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 |--------|-------------------|----------|
 | Identifier une collectivite (code INSEE, SIREN, population, EPCI) | `~~insee` (API Geo + Sirene) | `~~donnees publiques` |
 | Demographie, population legale, projections | `~~insee` (API Melodi) | `~~datacommons` |
-| Budgets collectivites, balances comptables | `~~donnees publiques` (data.gouv.fr) | — |
+| Comptes de gestion (agregats financiers) | `~~comptes` (data.ofgl.fr OFGL) | `~~donnees publiques` |
+| Budgets collectivites, balances comptables | `~~donnees publiques` (data.gouv.fr) | `~~comptes` |
 | Fiscalite locale — taux globaux (TFB, TH, CFE, TEOM) | `~~fiscalite` (data.economie.gouv.fr) | `~~donnees publiques` |
 | Fiscalite locale — detail (bases, produits, exonerations) | `~~fiscalite` (data.ofgl.fr REI) | — |
 | Comparaison strate / departement (taux moyens) | `~~fiscalite` (agregation avg) | — |
-| Dotations (DGF, FCTVA, DETR, DSIL) | `~~donnees publiques` (data.gouv.fr) | — |
+| Dotations (DGF, FCTVA, DETR, DSIL) | `~~comptes` (data.ofgl.fr dotations) | `~~donnees publiques` |
+| Aides et subventions (DETR, DSIL, fonds verts, etc.) | `~~aides` (aides-territoires) | `~~recherche` |
 | Inflation, indices des prix (IPC, IPCH) | `~~eurostat` (HICP) ou `~~insee` (Melodi IPC) | `~~datacommons` |
 | Taux d'interet de reference | `~~eurostat` (taux court terme) | Banque de France (web) |
 | Comparaison internationale (dette, pression fiscale) | `~~eurostat` | `~~datacommons` |

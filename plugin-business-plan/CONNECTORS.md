@@ -15,6 +15,7 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 | Base de donnees | `~~base de donnees` | — (PostgreSQL a configurer) | Supabase, SQLite |
 | Restitution / BI | `~~restitution` | — (Power BI a configurer) | Excel, Metabase |
 | Suite bureautique | `~~bureautique` | Microsoft 365 | Google Workspace |
+| Aides et subventions | `~~aides` | Skill aides-territoires (aides-territoires.beta.gouv.fr) | — |
 | Recherche web | `~~recherche` | — (web search natif Cowork) | — |
 
 ## Sources de donnees par usage
@@ -31,3 +32,4 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 | PIB, croissance economique | `~~eurostat` (nama_10_gdp) | `~~datacommons` |
 | Chomage local/national | `~~insee` (Melodi) ou `~~eurostat` (une_rt_m) | `~~datacommons` |
 | Geocodage adresse du projet | `~~insee` (API Adresse) | — |
+| Aides creation/reprise, subventions | `~~aides` (aides-territoires) | `~~recherche` |

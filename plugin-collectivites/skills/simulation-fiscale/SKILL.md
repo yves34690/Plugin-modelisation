@@ -83,7 +83,20 @@ Simulation hausse TFPB +1 point :               +XXX K€
 Simulation hausse CFE +0.5 point :               +XXX K€
 ```
 
-### 4. Ratios et alertes
+### 4. Contexte budgetaire (~~comptes)
+
+Pour contextualiser la simulation fiscale, recuperer les agregats financiers via OFGL :
+
+```bash
+# Epargne et dette de la collectivite — pour mesurer l'impact de la decision fiscale
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/ofgl-base-communes-consolidee/records?where=com_code%3D%22{code_insee}%22%20and%20year(exer)%3D{annee}&select=epargne_brute,epargne_nette,encours_de_dette,capacite_desendettement,taux_epargne_brute&limit=1"
+```
+
+Cela permet de repondre a la question : **la hausse/baisse de taux est-elle justifiee par la situation financiere ?**
+- Epargne brute faible + dette elevee → hausse potentiellement necessaire
+- Epargne brute confortable + dette maitrisee → hausse difficilement justifiable politiquement
+
+### 5. Ratios et alertes
 
 - **Effort fiscal** : produit 4 taxes / potentiel fiscal
 - **Coefficient de mobilisation du potentiel fiscal (CMPF)**

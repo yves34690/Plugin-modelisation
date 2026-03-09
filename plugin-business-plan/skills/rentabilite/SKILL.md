@@ -171,5 +171,6 @@ Transmettre au skill `restitution` :
 - **entretien-business-plan** — Phase prerequise d'entretien
 - **previsionnel** — Compte de resultat previsionnel
 - **tresorerie** — Plan de tresorerie mensuel
+- **plan-financement** — Plan de financement (coherence capacite de remboursement)
 - **hypotheses** — Moteur de generation des 3 scenarios
 - **restitution** — Production des livrables Power BI / Excel

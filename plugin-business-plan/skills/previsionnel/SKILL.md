@@ -181,4 +181,6 @@ Transmettre au skill `restitution` :
 - **hypotheses** — Moteur de generation des 3 scenarios
 - **tresorerie** — Plan de tresorerie mensuel
 - **rentabilite** — Seuil de rentabilite et point mort
+- **bilan-previsionnel** — Bilan previsionnel (utilise le resultat net et les amortissements)
+- **plan-financement** — Plan de financement (utilise la CAF)
 - **restitution** — Production des livrables Power BI / Excel

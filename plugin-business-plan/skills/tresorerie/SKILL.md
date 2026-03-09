@@ -149,5 +149,7 @@ Transmettre au skill `restitution` :
 - **entretien-business-plan** — Phase prerequise d'entretien
 - **previsionnel** — Compte de resultat (base pour les flux)
 - **rentabilite** — Seuil de rentabilite et point mort
+- **bilan-previsionnel** — Bilan previsionnel (utilise le solde de tresorerie cumule et le BFR)
+- **plan-financement** — Plan de financement (utilise la variation de tresorerie et le BFR)
 - **hypotheses** — Moteur de generation des 3 scenarios
 - **restitution** — Production des livrables Power BI / Excel
