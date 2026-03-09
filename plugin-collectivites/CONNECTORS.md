@@ -9,6 +9,7 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 | Categorie | Placeholder | Serveur inclus | Autres options |
 |-----------|-------------|----------------|----------------|
 | Donnees publiques | `~~donnees publiques` | datagouv (data.gouv.fr) | — |
+| Fiscalite locale | `~~fiscalite` | Skill fiscalite-locale (APIs DGFiP open data) | — |
 | Entreprises & territoires | `~~insee` | Skill INSEE (Sirene, Melodi, Geo, Adresse) | API Banatic |
 | Statistiques europeennes | `~~eurostat` | Skill Eurostat (API Statistics) | — |
 | Donnees mondiales | `~~datacommons` | MCP Data Commons (Google) | — |
@@ -23,7 +24,9 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 | Identifier une collectivite (code INSEE, SIREN, population, EPCI) | `~~insee` (API Geo + Sirene) | `~~donnees publiques` |
 | Demographie, population legale, projections | `~~insee` (API Melodi) | `~~datacommons` |
 | Budgets collectivites, balances comptables | `~~donnees publiques` (data.gouv.fr) | — |
-| Fiscalite locale (bases, taux, produits) | `~~donnees publiques` (data.gouv.fr) | — |
+| Fiscalite locale — taux globaux (TFB, TH, CFE, TEOM) | `~~fiscalite` (data.economie.gouv.fr) | `~~donnees publiques` |
+| Fiscalite locale — detail (bases, produits, exonerations) | `~~fiscalite` (data.ofgl.fr REI) | — |
+| Comparaison strate / departement (taux moyens) | `~~fiscalite` (agregation avg) | — |
 | Dotations (DGF, FCTVA, DETR, DSIL) | `~~donnees publiques` (data.gouv.fr) | — |
 | Inflation, indices des prix (IPC, IPCH) | `~~eurostat` (HICP) ou `~~insee` (Melodi IPC) | `~~datacommons` |
 | Taux d'interet de reference | `~~eurostat` (taux court terme) | Banque de France (web) |

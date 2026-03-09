@@ -15,16 +15,40 @@ description: Simuler l'impact de decisions fiscales (taux, bases, exonerations) 
 - API Geo : `https://geo.api.gouv.fr/communes?nom={nom}&fields=nom,code,population,departement,epci`
 - API Sirene : recherche par denomination + categorie juridique pour obtenir le SIREN
 
-**Donnees fiscales (~~donnees publiques)** :
-- Rechercher les etats fiscaux (etats 1259/1253) sur data.gouv.fr
-- Recuperer : bases nettes, taux votes, produits, compensations
-- Recuperer les donnees de la strate (moyennes nationales par taille)
+**Données fiscales (~~fiscalite)** :
 
-Donnees necessaires par impot :
-- **Taxe fonciere (TFPB)** : base nette, taux communal, taux intercommunal
-- **CFE** : base nette, taux intercommunal
-- **CVAE** : produit percu (allocation)
-- **TH residuelle** (residences secondaires si applicable) : base, taux
+Taux globaux (vue rapide) :
+```bash
+# Taux synthétiques via data.economie.gouv.fr
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-particuliers/records?where=insee_com%3D%22{code}%22&order_by=exercice%20desc&limit=1"
+
+# Taux CFE via dataset entreprises
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-entreprises/records?where=insee_com%3D%22{code}%22&order_by=exercice%20desc&limit=1"
+```
+
+Détail REI (bases, produits, exonérations) :
+```bash
+# Bases nettes FB
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?where=idcom%3D%22{code}%22%20and%20annee%3D%222024%22%20and%20dispositif_fiscal%3D%22FB%22%20and%20categorie%3D%22Base%22&select=varlib,destinataire,valeur&limit=50"
+
+# Produits fiscaux
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?where=idcom%3D%22{code}%22%20and%20annee%3D%222024%22%20and%20categorie%3D%22Produit%22&select=dispositif_fiscal,varlib,destinataire,valeur&order_by=valeur%20desc&limit=50"
+
+# Exonérations
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?where=idcom%3D%22{code}%22%20and%20annee%3D%222024%22%20and%20categorie%3D%22Exoneration%22&select=dispositif_fiscal,varlib,valeur&limit=50"
+```
+
+Moyenne de la strate / département pour comparaison :
+```bash
+# Moyenne départementale TFB
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-particuliers/records?where=dep%3D%22{dep}%22%20and%20exercice%3D%222024%22&select=avg(taux_global_tfb)%20as%20tfb_moyen,avg(taux_global_th)%20as%20th_moyen&limit=1"
+```
+
+Données nécessaires par impôt :
+- **Taxe fonciere (TFPB)** : base nette, taux communal, taux intercommunal → REI `dispositif_fiscal="FB"`
+- **CFE** : base nette, taux intercommunal → REI `dispositif_fiscal="CFE"`
+- **CVAE** : produit percu (allocation) → REI `dispositif_fiscal` correspondant
+- **TH residuelle** (residences secondaires si applicable) : base, taux → REI `dispositif_fiscal="TH"`
 
 ### 2. Simuler les scenarios
 

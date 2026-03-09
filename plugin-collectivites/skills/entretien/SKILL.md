@@ -106,24 +106,36 @@ curl -s -H "X-INSEE-Api-Key-Integration: $INSEE_API_KEY" \
 curl -s "https://api.insee.fr/melodi/data/DS_POPULATIONS_REFERENCE?GEO={code_commune}&POPREF_MEASURE=PMUN"
 ```
 
-**Étape 3 — Données budgétaires et fiscales (~~donnees publiques)**
+**Étape 3a — Fiscalité locale (~~fiscalite)**
+
+```bash
+# Taux globaux synthétiques (TFB, TH, TEOM)
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-particuliers/records?where=insee_com%3D%22{code}%22&order_by=exercice%20desc&limit=4"
+
+# Taux CFE
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-entreprises/records?where=insee_com%3D%22{code}%22&order_by=exercice%20desc&limit=4"
+
+# Bases imposables et produits détaillés (REI)
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?where=idcom%3D%22{code}%22%20and%20annee%3D%222024%22%20and%20categorie%3D%22Base%22&select=dispositif_fiscal,varlib,destinataire,valeur&limit=50"
+curl -s "https://data.ofgl.fr/api/explore/v2.1/catalog/datasets/rei/records?where=idcom%3D%22{code}%22%20and%20annee%3D%222024%22%20and%20categorie%3D%22Produit%22&select=dispositif_fiscal,varlib,destinataire,valeur&limit=50"
+
+# Moyenne départementale pour comparaison strate
+curl -s "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/fiscalite-locale-des-particuliers/records?where=dep%3D%22{dep}%22%20and%20exercice%3D%222024%22&select=avg(taux_global_tfb)%20as%20tfb_moyen,avg(taux_global_th)%20as%20th_moyen,avg(taux_plein_teom)%20as%20teom_moyen&limit=1"
+```
+
+**Étape 3b — Données budgétaires (~~donnees publiques)**
 
 ```
 1. search_datasets → budgets collectivités (comptes individuels)
    - Balances comptables (nomenclature M57/M14)
    - Section de fonctionnement et d'investissement
 
-2. search_datasets → fiscalité locale
-   - Bases nettes d'imposition (TH, TF, CFE, CVAE)
-   - Taux votés et taux moyens de la strate
-   - Produits fiscaux
-
-3. search_datasets → dotations
+2. search_datasets → dotations
    - DGF (dotation forfaitaire, DSU, DSR, DNP)
    - FCTVA, DETR, DSIL
    - Péréquation (FPIC, FSRIF)
 
-4. search_datasets → dette
+3. search_datasets → dette
    - Encours, annuités, taux moyen, durée résiduelle
    - Profil d'extinction
 ```
