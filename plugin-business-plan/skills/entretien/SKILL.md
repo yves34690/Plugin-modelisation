@@ -120,21 +120,59 @@ Questions à poser (adapter selon les réponses) :
 
 #### Recherche automatique de benchmarks
 
+**Étape 1 — Analyse sectorielle (~~insee Sirene)**
+
+```bash
+# Compter les entreprises actives du secteur dans la zone (API Sirene — nécessite $INSEE_API_KEY)
+# Exemple : conseil en informatique (62.01Z) à Bordeaux (33063)
+curl -s -H "X-INSEE-Api-Key-Integration: $INSEE_API_KEY" \
+  "https://api.insee.fr/api-sirene/3.11/siret?q=codeCommuneEtablissement:{code_commune} AND periode(activitePrincipaleEtablissement:{code_naf} AND etatAdministratifEtablissement:A)&nombre=0"
+# Le champ header.total donne le nombre d'établissements actifs = densité concurrentielle
+
+# Identifier les plus gros acteurs du secteur dans la zone
+curl -s -H "X-INSEE-Api-Key-Integration: $INSEE_API_KEY" \
+  "https://api.insee.fr/api-sirene/3.11/siret?q=codeCommuneEtablissement:{code_commune} AND periode(activitePrincipaleEtablissement:{code_naf} AND etatAdministratifEtablissement:A)&nombre=20&champs=siren,denominationUniteLegale,trancheEffectifsEtablissement"
 ```
-1. search_datasets → données INSEE sectorielles
-   - Ratios financiers par secteur (marge brute, EBE, résultat net)
+
+**Étape 2 — Zone de chalandise (~~insee Geo + Melodi)**
+
+```bash
+# Communes autour du point d'implantation (API Geo — sans auth)
+curl -s "https://geo.api.gouv.fr/communes?lat={lat}&lon={lon}&fields=nom,code,population"
+
+# Population de la commune d'implantation
+curl -s "https://geo.api.gouv.fr/communes/{code_commune}"
+
+# EPCI d'appartenance (bassin de vie)
+curl -s "https://geo.api.gouv.fr/epcis/{code_epci}/communes?fields=nom,code,population"
+
+# Données démographiques détaillées via Melodi (sans auth)
+curl -s "https://api.insee.fr/melodi/data/DS_POPULATIONS_REFERENCE?GEO={code_commune}&POPREF_MEASURE=PMUN"
+```
+
+**Étape 3 — Contexte macro (~~eurostat)**
+
+```bash
+# Inflation France (HICP) — pour calibrer l'évolution des charges
+curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_manr?geo=FR&lastTimePeriod=12&coicop=CP00&lang=FR"
+
+# Taux de chômage France — contexte marché du travail
+curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?geo=FR&lastTimePeriod=12&age=TOTAL&sex=T&s_adj=SA&unit=PC_ACT&lang=FR"
+
+# Croissance PIB France — contexte économique général
+curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?geo=FR&lastTimePeriod=8&na_item=B1GQ&unit=CLV_PCH_PRE&s_adj=SCA&lang=FR"
+```
+
+**Étape 4 — Données complémentaires (~~donnees publiques)**
+
+```
+1. search_datasets → ratios financiers par secteur
+   - Marge brute, EBE, résultat net moyens du secteur
    - Taux de survie des entreprises à 3 et 5 ans
-   - Nombre d'entreprises et CA moyen du secteur
 
-2. search_datasets → démographie zone de chalandise
-   - Population, revenus médians, CSP
-   - Taux de chômage local
+2. search_datasets → données économiques locales
+   - Revenus médians, CSP de la zone
    - Densité commerciale
-
-3. search_datasets → données économiques générales
-   - Inflation, indices des prix
-   - Taux d'intérêt bancaires aux entreprises
-   - Évolution du secteur
 ```
 
 #### Documents fournis par l'utilisateur

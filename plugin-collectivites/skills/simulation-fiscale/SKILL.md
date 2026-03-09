@@ -11,7 +11,11 @@ description: Simuler l'impact de decisions fiscales (taux, bases, exonerations) 
 
 ### 1. Collecter les donnees fiscales
 
-Si ~~donnees publiques est connecte :
+**Identification de la collectivite (~~insee)** :
+- API Geo : `https://geo.api.gouv.fr/communes?nom={nom}&fields=nom,code,population,departement,epci`
+- API Sirene : recherche par denomination + categorie juridique pour obtenir le SIREN
+
+**Donnees fiscales (~~donnees publiques)** :
 - Rechercher les etats fiscaux (etats 1259/1253) sur data.gouv.fr
 - Recuperer : bases nettes, taux votes, produits, compensations
 - Recuperer les donnees de la strate (moyennes nationales par taille)

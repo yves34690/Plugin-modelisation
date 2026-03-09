@@ -14,18 +14,31 @@ description: Construire une prospective financiere pluriannuelle pour une collec
 Demander a l'utilisateur :
 - Nom et type de collectivite (commune, EPCI, departement, region)
 - Code INSEE ou SIREN
-- Population (si non trouvee via ~~donnees publiques)
+- Population (si non trouvee via ~~insee API Geo)
+
+Si ~~insee est connecte :
+- Rechercher via API Geo : `https://geo.api.gouv.fr/communes?nom={nom}&boost=population&fields=nom,code,population,departement,region,epci`
+- Recuperer le SIREN via API Sirene : recherche par denomination + categorie juridique (7210=commune, 7346=CC, etc.)
+- Recuperer la population legale via Melodi : `https://api.insee.fr/melodi/data/DS_POPULATIONS_REFERENCE?GEO={code_commune}`
 
 ### 2. Collecter les donnees historiques
 
-Si ~~donnees publiques est connecte :
+**Données budgétaires et fiscales (~~donnees publiques)** :
 - Rechercher les budgets de la collectivite sur data.gouv.fr (`search_datasets` avec mots-cles : budget, collectivite, nom)
 - Recuperer les comptes administratifs des 3-5 derniers exercices
 - Recuperer les donnees fiscales (bases, taux, produits)
-- Recuperer les donnees demographiques
+
+**Données démographiques (~~insee)** :
+- Population legale et evolution via Melodi
+- Structure par age et projections
+
+**Contexte macro (~~eurostat)** :
+- Inflation HICP France : `prc_hicp_manr?geo=FR&lastTimePeriod=24&coicop=CP00`
+- Taux d'interet court terme : `irt_st_m?geo=FR&lastTimePeriod=24`
+- Ces donnees servent a calibrer les hypotheses d'evolution (charges generales, cout des emprunts)
 
 Si aucune source connectee :
-> Connectez ~~donnees publiques pour recuperer automatiquement les budgets et donnees fiscales. Vous pouvez aussi fournir les comptes administratifs en fichier Excel/CSV.
+> Connectez les skills ~~insee et ~~eurostat pour enrichir automatiquement la collecte. Vous pouvez aussi fournir les comptes administratifs en fichier Excel/CSV.
 
 ### 3. Construire la section de fonctionnement
 
@@ -84,7 +97,10 @@ Pour chaque variable, definir 3 hypotheses :
 | GVT + mesures salariales | +3%/an | +2.5%/an | +2%/an |
 | Taux d'interet nouveaux emprunts | 4.5% | 3.5% | 2.5% |
 
-> Ces valeurs par defaut doivent etre calibrees avec les donnees de reference de ~~donnees publiques et adaptees a la strate de la collectivite.
+> Ces valeurs par defaut doivent etre calibrees avec :
+> - **~~eurostat** : inflation HICP reelle (charges generales), taux d'interet de reference (emprunts)
+> - **~~insee** : evolution demographique locale (bases fiscales)
+> - **~~donnees publiques** : donnees de strate et historiques budgetaires
 
 ### 7. Stocker les resultats
 

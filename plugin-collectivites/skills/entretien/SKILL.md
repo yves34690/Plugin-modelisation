@@ -82,7 +82,31 @@ Questions à poser (adapter selon les réponses, ne pas tout demander d'un bloc)
 
 **Objectif :** rassembler toutes les données nécessaires à la modélisation.
 
-#### Recherche automatique (datagouv)
+#### Recherche automatique
+
+**Étape 1 — Identification de la collectivité (~~insee)**
+
+```bash
+# Trouver la commune par nom ou code postal (API Geo — sans auth)
+curl -s "https://geo.api.gouv.fr/communes?nom={nom}&boost=population&fields=nom,code,population,departement,region,epci"
+
+# Ou par code INSEE
+curl -s "https://geo.api.gouv.fr/communes/{code_insee}"
+
+# Trouver le SIREN de la collectivité (API Sirene — nécessite $INSEE_API_KEY)
+curl -s -H "X-INSEE-Api-Key-Integration: $INSEE_API_KEY" \
+  "https://api.insee.fr/api-sirene/3.11/siren?q=periode(denominationUniteLegale:{NOM}) AND periode(categorieJuridiqueUniteLegale:7210)&nombre=5"
+# 7210 = commune, 7220 = département, 7230 = région, 7346 = communauté de communes, etc.
+```
+
+**Étape 2 — Démographie (~~insee Melodi ou ~~datacommons)**
+
+```bash
+# Population via Melodi (sans auth)
+curl -s "https://api.insee.fr/melodi/data/DS_POPULATIONS_REFERENCE?GEO={code_commune}&POPREF_MEASURE=PMUN"
+```
+
+**Étape 3 — Données budgétaires et fiscales (~~donnees publiques)**
 
 ```
 1. search_datasets → budgets collectivités (comptes individuels)
@@ -99,13 +123,19 @@ Questions à poser (adapter selon les réponses, ne pas tout demander d'un bloc)
    - FCTVA, DETR, DSIL
    - Péréquation (FPIC, FSRIF)
 
-4. search_datasets → démographie INSEE
-   - Population légale, évolution, projections
-   - Structure par âge
-
-5. search_datasets → dette
+4. search_datasets → dette
    - Encours, annuités, taux moyen, durée résiduelle
    - Profil d'extinction
+```
+
+**Étape 4 — Contexte macro (~~eurostat)**
+
+```bash
+# Inflation zone euro (HICP) — pour calibrer les hypothèses d'évolution des charges
+curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_manr?geo=FR&lastTimePeriod=12&coicop=CP00&lang=FR"
+
+# Taux d'intérêt court terme — pour calibrer le coût des nouveaux emprunts
+curl -s "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/irt_st_m?geo=FR&lastTimePeriod=12&lang=FR"
 ```
 
 #### Documents fournis par l'utilisateur

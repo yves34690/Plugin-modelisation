@@ -8,7 +8,24 @@ Les fichiers du plugin utilisent `~~categorie` comme placeholder pour l'outil co
 
 | Categorie | Placeholder | Serveur inclus | Autres options |
 |-----------|-------------|----------------|----------------|
-| Donnees publiques | `~~donnees publiques` | datagouv (data.gouv.fr) | API INSEE, API Banatic |
+| Donnees publiques | `~~donnees publiques` | datagouv (data.gouv.fr) | — |
+| Entreprises & territoires | `~~insee` | Skill INSEE (Sirene, Melodi, Geo, Adresse) | API Banatic |
+| Statistiques europeennes | `~~eurostat` | Skill Eurostat (API Statistics) | — |
+| Donnees mondiales | `~~datacommons` | MCP Data Commons (Google) | — |
 | Base de donnees | `~~base de donnees` | — (PostgreSQL a configurer) | Supabase, SQLite |
 | Restitution / BI | `~~restitution` | — (Power BI a configurer) | Excel, Metabase |
 | Suite bureautique | `~~bureautique` | Microsoft 365 | Google Workspace |
+
+## Sources de donnees par usage
+
+| Besoin | Source prioritaire | Fallback |
+|--------|-------------------|----------|
+| Identifier une collectivite (code INSEE, SIREN, population, EPCI) | `~~insee` (API Geo + Sirene) | `~~donnees publiques` |
+| Demographie, population legale, projections | `~~insee` (API Melodi) | `~~datacommons` |
+| Budgets collectivites, balances comptables | `~~donnees publiques` (data.gouv.fr) | — |
+| Fiscalite locale (bases, taux, produits) | `~~donnees publiques` (data.gouv.fr) | — |
+| Dotations (DGF, FCTVA, DETR, DSIL) | `~~donnees publiques` (data.gouv.fr) | — |
+| Inflation, indices des prix (IPC, IPCH) | `~~eurostat` (HICP) ou `~~insee` (Melodi IPC) | `~~datacommons` |
+| Taux d'interet de reference | `~~eurostat` (taux court terme) | Banque de France (web) |
+| Comparaison internationale (dette, pression fiscale) | `~~eurostat` | `~~datacommons` |
+| Geocodage, contours communes | `~~insee` (API Geo + Adresse) | — |

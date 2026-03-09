@@ -63,7 +63,7 @@ Appliquer les taux de croissance par scenario :
 
 | Poste | Montant mensuel | Evolution annuelle | Source |
 |-------|----------------|-------------------|--------|
-| Loyer + charges | X€ | Indice ILC | Bail / estimation |
+| Loyer + charges | X€ | Indice ILC (~~eurostat HICP ou ~~insee IPC) | Bail / estimation |
 | Assurances | X€ | +2-3%/an | Devis |
 | Honoraires comptables | X€ | Stable | Devis |
 | Telecom / IT | X€ | Stable | — |
@@ -171,8 +171,9 @@ Transmettre au skill `restitution` :
 1. **Normes francaises** — PCG, nomenclature BPI/banque pour la presentation
 2. **Coherence** — verifier que la marge brute est cohérente avec le secteur
 3. **Prudence** — le scenario conservateur doit etre tenable meme en conditions defavorables
-4. **Sources** — chaque benchmark cite doit etre tracable
+4. **Sources** — chaque benchmark cite doit etre tracable (INSEE Sirene pour la concurrence, Eurostat pour les indices macro, data.gouv.fr pour les ratios sectoriels)
 5. **Lisibilite** — l'utilisateur doit pouvoir defendre ces chiffres devant un banquier
+6. **Indices macro** — utiliser ~~eurostat (HICP, taux d'interet) et ~~insee (IPC, Melodi) pour calibrer les hypotheses d'evolution plutot que des valeurs arbitraires
 
 ## Skills lies
 

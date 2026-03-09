@@ -3,6 +3,10 @@
     "datagouv": {
       "type": "http",
       "url": "https://mcp.data.gouv.fr/mcp"
+    },
+    "datacommons": {
+      "type": "http",
+      "url": "https://api.datacommons.org/mcp"
     }
   }
 }
