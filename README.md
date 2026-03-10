@@ -14,7 +14,7 @@ Mais aujourd'hui, quand on demande à une IA de faire un prévisionnel, elle pro
 |---|---|---|
 | **Dialogue** | Comprendre le contexte, calibrer les hypothèses | Agent Claude (langage naturel) |
 | **Variables** | Paramètres du modèle (CAPEX, taux, croissance...) | PostgreSQL |
-| **Données de référence** | Benchmarks, ratios sectoriels, données publiques | API (datagouv, INSEE...) |
+| **Données de référence** | Benchmarks, ratios sectoriels, données publiques | APIs ouvertes (voir ci-dessous) |
 | **Moteur de calcul** | Formules, projections, 3 scénarios | SQL / DAX |
 | **Restitution** | KPI, tableaux, graphiques | Power BI / Excel |
 
@@ -27,21 +27,60 @@ L'utilisateur dialogue en langage naturel. L'agent construit le modèle, le stoc
 Modélisation financière pour les collectivités territoriales françaises :
 - Prospective financière pluriannuelle
 - Programmation pluriannuelle des investissements (PPI)
-- Simulation fiscale (bases, taux, produits)
+- Simulation fiscale (bases, taux, produits, exonérations)
+- Comptes de gestion (49 agrégats financiers par collectivité)
+- Recherche d'aides et subventions publiques (DETR, DSIL, fonds vert...)
 - Capacité d'autofinancement et gestion de la dette
 
-**Source de données** : [datagouv-mcp](https://github.com/datagouv/datagouv-mcp) — données publiques (budgets, fiscalité locale, démographie, dotations)
+**Skills :**
+
+| Skill | Description |
+|-------|-------------|
+| `entretien` | Entretien structuré de qualification du besoin |
+| `prospective` | Projection financière pluriannuelle |
+| `simulation-fiscale` | Simulation d'impact fiscal (taux, bases, produits) |
+| `comptes-collectivites` | Agrégats financiers OFGL (épargne, dette, équipement...) |
+| `fiscalite-locale` | Taux, bases et produits fiscaux (DGFiP / OFGL REI) |
+| `aides-territoires` | Recherche d'aides publiques (3 000+ dispositifs) |
+| `veille-ao` | Veille sur les appels d'offres |
+| `analyse-dce` | Analyse de dossiers de consultation |
+
+**Sources de données :**
+- [OFGL](https://data.ofgl.fr) — Comptes de gestion consolidés, dotations détaillées
+- [DGFiP / OFGL REI](https://data.economie.gouv.fr) — Fiscalité locale (taux, bases, produits, exonérations)
+- [Aides-territoires](https://aides-territoires.beta.gouv.fr) — Subventions et aides publiques
+- [INSEE](https://api.insee.fr) — Sirene, Melodi, Geo, Adresse
+- [Eurostat](https://ec.europa.eu/eurostat) — Inflation, taux d'intérêt, comparaisons européennes
+- [data.gouv.fr](https://data.gouv.fr) — Budgets, balances comptables, données socio-économiques
+- [Data Commons](https://datacommons.org) — Données mondiales complémentaires
 
 ### 2. Plugin Business Plan (`plugin-business-plan/`)
 
 Prévisionnel financier pour entrepreneurs et TPE/PME :
-- Compte de résultat prévisionnel (3-5 ans)
+- Compte de résultat prévisionnel (3-5 ans, mensuel puis annuel)
 - Plan de trésorerie mensuel
-- Bilan prévisionnel
+- Bilan prévisionnel sur 3 ans
+- Plan de financement initial + pluriannuel (3-5 ans)
 - Seuil de rentabilité et point mort
 - Analyse de sensibilité (3 scénarios)
 
-**Source de données** : benchmarks sectoriels, ratios INSEE, données marché
+**Skills :**
+
+| Skill | Description |
+|-------|-------------|
+| `entretien` | Entretien structuré de qualification du besoin |
+| `previsionnel` | Compte de résultat prévisionnel et SIG |
+| `tresorerie` | Plan de trésorerie mensuel (encaissements / décaissements) |
+| `bilan-previsionnel` | Bilan prévisionnel (actif/passif, ratios bilantiels) |
+| `plan-financement` | Plan de financement initial + pluriannuel (CAF, emplois/ressources) |
+| `rentabilite` | Seuil de rentabilité, point mort, analyse de sensibilité |
+
+**Sources de données :**
+- [INSEE](https://api.insee.fr) — Sirene (concurrence), Melodi (démographie), Geo (zone de chalandise)
+- [Eurostat](https://ec.europa.eu/eurostat) — Inflation, taux d'intérêt, croissance PIB
+- [Aides-territoires](https://aides-territoires.beta.gouv.fr) — Aides création/reprise d'entreprise
+- [data.gouv.fr](https://data.gouv.fr) — Ratios sectoriels, données économiques locales
+- [Data Commons](https://datacommons.org) — Données mondiales complémentaires
 
 ## Architecture
 
@@ -49,25 +88,22 @@ Prévisionnel financier pour entrepreneurs et TPE/PME :
 Plugin-modelisation/
 ├── core/                          # Socle commun
 │   ├── skills/                    # Skills partagés (hypothèses, restitution)
-│   ├── schema/                    # Schéma PostgreSQL
+│   ├── schema/                    # Schéma PostgreSQL (projets, hypothèses, projections,
+│   │                              #   bilan_previsionnel, plan_financement, trésorerie...)
 │   └── templates/                 # Templates Power BI / Excel
 │
 ├── plugin-collectivites/          # Plugin Cowork - Collectivités
 │   ├── .claude-plugin/plugin.json
-│   ├── .mcp.json                  # datagouv-mcp + PostgreSQL
-│   ├── skills/                    # Prospective, PPI, fiscalité
-│   └── agents/                    # Agent spécialisé collectivités
+│   ├── CONNECTORS.md              # Table des connecteurs (~~comptes, ~~fiscalite, ~~aides...)
+│   └── skills/                    # 8 skills (prospective, fiscalité, comptes OFGL, aides...)
 │
 ├── plugin-business-plan/          # Plugin Cowork - Business Plan
 │   ├── .claude-plugin/plugin.json
-│   ├── .mcp.json                  # Benchmarks + PostgreSQL
-│   ├── skills/                    # Prévi, trésorerie, rentabilité
-│   └── agents/                    # Agent spécialisé BP
+│   ├── CONNECTORS.md              # Table des connecteurs (~~insee, ~~eurostat, ~~aides...)
+│   └── skills/                    # 6 skills (prévi, trésorerie, bilan, plan financement...)
 │
 └── docs/                          # Documentation et guides
-    ├── installation.md
-    ├── guide-collectivites.md
-    └── guide-business-plan.md
+    └── vision.md                  # Vision produit et roadmap
 ```
 
 ## Prérequis
